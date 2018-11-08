@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+click = "*"
+"beautifulsoup4" = "*"
+pylev = "*"
+prompt-toolkit = "*"
+tinydb = "*"
+
+[dev-packages]
+bumpversion = "*"
+watchdog = "*"
+"flake8" = "*"
+icecream = "*"
+pylint = "*"
+tox = "*"
+pytest-runner = "*"
+pytest-cov = "*"
+pytest = "*"
