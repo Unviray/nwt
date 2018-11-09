@@ -13,7 +13,11 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     HISTORY = history_file.read()
 
-REQUIREMENTS = ['Click>=6.0', ]
+REQUIREMENTS = ['Click>=7.0',
+                'beautifulsoup4>=4.6',
+                'pylev>=1.3',
+                'prompt-toolkit>=2.0',
+                'tinydb>=3.11',]
 
 SETUP_REQUIREMENTS = ['pytest-runner', ]
 

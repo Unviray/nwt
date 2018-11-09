@@ -9,7 +9,7 @@ import click
 
 from nwt import __version__
 from nwt.cmd import Interactive
-from nwt.setup.install import install as setup
+from nwt.setup.install import Install
 
 
 @click.group(invoke_without_command=True)
@@ -51,7 +51,8 @@ def download():
 @main.command()
 @click.argument('file_path')
 def install(file_path):
-    setup(file_path)
+    ins = Install(file_path)
+    ins.run()
 
 
 if __name__ == "__main__":
