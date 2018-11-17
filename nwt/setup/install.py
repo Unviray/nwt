@@ -10,7 +10,7 @@ from icecream import ic
 from tinydb import TinyDB, Query
 from bs4 import BeautifulSoup, NavigableString
 
-from nwt.utils import Dir
+from nwt.utils.os_util import Dir
 
 
 class Install(object):
@@ -26,7 +26,9 @@ class Install(object):
         self.metadata = {}
 
         self.metadata['title'] = self.soup.head.title.text
-        self.metadata['stand'] = self.metadata['title'].split('(')[-1].split(')')[0]
+        self.metadata['stand'] = self.metadata['title'].split('(')[-1]
+        self.metadata['stand'] = self.metadata['stand'].split(')')[0]
+        self.metadata['stand'] = self.metadata['stand'].replace('-', '_')
 
         self.inspath = Dir.bible_dir / self.metadata['stand'].replace('-', '_')
 
@@ -34,19 +36,16 @@ class Install(object):
             self.metadata['stand']))
 
     def get_book_list(self):
-        print('Get book list...', end=' ')
-
         bookDB = self.metadb.table('book_list')
 
         rawlist = self.soup.body.section.nav.ol.find_all('a')[1:133]
         for element in rawlist:
-            if not ('Outline' in element.text):
+            if not 'Outline' in element.text:
                 bookDB.insert(dict(
                     book_name=element.text,
                     book_path=element.attrs['href']))
 
                 self.bookList[element.text] = element.attrs['href']
-        print('done')
 
     def run(self):
         print('Copy file...', end=' ')
@@ -55,4 +54,6 @@ class Install(object):
             self.inspath / '{}.epub'.format(self.metadata['stand']))
         print('done')
 
+        print('Get book list...', end=' ')
         self.get_book_list()
+        print('done')

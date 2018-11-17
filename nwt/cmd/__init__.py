@@ -10,7 +10,7 @@ from nwt.cmd.inputparser import InputParser
 from nwt.cmd.outputparser import OutputParser
 
 
-class Interactive(object):
+class Interactive:
     """
     Interactive command session
     """
@@ -23,7 +23,6 @@ class Interactive(object):
         """
         Function to replace default 'input' -> 'prompt'
         """
-
         try:
             result = self.prompt_session.prompt(self.leftprompt)
             return result
@@ -31,10 +30,16 @@ class Interactive(object):
             sys.exit(0)
 
     def inject(self, query):
+        """
+        inject user query and print the final result
+        """
         parsed = InputParser(query)
         out = OutputParser(parsed)
         print(out)
 
     def run(self):
+        """
+        loop and wait user input.
+        """
         while True:
             self.inject(self.prompter().lower())

@@ -5,64 +5,75 @@ The parser for all input query
 
 import collections
 
+from nwt.errors import InputError
 from nwt.utils import GetDistance
 
 
 def parse_int_list(range_string, delim=',', range_delim='-'):
-    """Returns a sorted list of positive integers based on
+    """
+    Returns a sorted list of positive integers based on
     *range_string*. Reverse of :func:`format_int_list`.
 
     Args:
-        range_string (str): String of comma separated positive
-            integers or ranges (e.g. '1,2,4-6,8'). Typical of a custom
-            page range string used in printer dialogs.
-        delim (char): Defaults to ','. Separates integers and
-            contiguous ranges of integers.
-        range_delim (char): Defaults to '-'. Indicates a contiguous
-            range of integers.
+        range_string (str):
+            String of comma separated positive integers or ranges
+            (e.g. '1,2,4-6,8'). Typical of a custom page range string used
+            in printer dialogs.
+
+        delim (char):
+            Defaults to ','. Separates integers and contiguous ranges of
+            integers.
+
+        range_delim (char):
+            Defaults to '-'. Indicates a contiguous range of integers.
 
     >>> parse_int_list('1,3,5-8,10-11,15')
     [1, 3, 5, 6, 7, 8, 10, 11, 15]
-
     """
     output = []
 
-    for x in range_string.strip().split(delim):
+    for element in range_string.strip().split(delim):
 
         # Range
-        if range_delim in x:
-            range_limits = list(map(int, x.split(range_delim)))
+        if range_delim in element:
+            range_limits = list(map(int, element.split(range_delim)))
             output += list(range(min(range_limits), max(range_limits)+1))
 
         # Empty String
-        elif not x:
+        elif not element:
             continue
 
         # Integer
         else:
-            output.append(int(x))
+            output.append(int(element))
 
     return sorted(output)
 
 
 def format_int_list(int_list, delim=',', range_delim='-', delim_space=False):
-    """Returns a sorted range string from a list of positive integers
+    """
+    Returns a sorted range string from a list of positive integers
     (*int_list*). Contiguous ranges of integers are collapsed to min
     and max values. Reverse of :func:`parse_int_list`.
 
     Args:
-        int_list (list): List of positive integers to be converted
-           into a range string (e.g. [1,2,4,5,6,8]).
-        delim (char): Defaults to ','. Separates integers and
-           contiguous ranges of integers.
-        range_delim (char): Defaults to '-'. Indicates a contiguous
-           range of integers.
-        delim_space (bool): Defaults to ``False``. If ``True``, adds a
-           space after all *delim* characters.
+        int_list (list):
+            List of positive integers to be converted into a range string
+            (e.g. [1,2,4,5,6,8]).
+
+        delim (char):
+            Defaults to ','. Separates integers and contiguous ranges of
+            integers.
+
+        range_delim (char):
+            Defaults to '-'. Indicates a contiguous range of integers.
+
+        delim_space (bool):
+            Defaults to ``False``. If ``True``, adds a space after all
+            *delim* characters.
 
     >>> format_int_list([1,3,5,6,7,8,10,11,15])
     '1,3,5-8,10-11,15'
-
     """
     output = []
     contig_range = collections.deque()
@@ -135,7 +146,10 @@ def format_int_list(int_list, delim=',', range_delim='-', delim_space=False):
     return output_str
 
 
-class InputParser(object):
+class InputParser:
+    """
+    Parse simple inline query
+    """
     def __init__(self, query):
         self.query = query
         self.result = {}
@@ -145,18 +159,29 @@ class InputParser(object):
             Auto parse query
             """
 
+            # separate book and pointers
             pbook = self.query.lower().split(' ')
             prebook1 = GetDistance(pbook[0])
             prebook2 = GetDistance(' '.join(pbook[:1]))
 
+            if not isinstance(pbook, list):
+                raise InputError('Please add an space in your input')
+
+            # get closest distance between 'have space' or 'haven't'
             if prebook1.distance <= prebook2.distance:
                 entbook = prebook1
             else:
                 entbook = prebook2
 
-            with_sub = len(entbook.closest.split(' ')) == 1
-            rawsubbook = pbook[2] if with_sub else pbook[1]
+            # if have space the pointer is in index 2
+            with_sub = len(entbook.closest.split(' ')) > 1
 
+            if with_sub:
+                rawsubbook = pbook[2]
+            else:
+                rawsubbook = pbook[1]
+
+            # decode pointers
             subbook = dict()
             for raw in rawsubbook.split(';'):
                 chapter = int(raw.split(':')[0])
@@ -186,6 +211,6 @@ class InputParser(object):
         _len = 0
         for book in self.result:
             for chapter in self.result[book]:
-                for verset in self.result[book][chapter]:
+                for _ in self.result[book][chapter]:
                     _len += 1
         return _len

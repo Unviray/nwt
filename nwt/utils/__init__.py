@@ -1,12 +1,32 @@
 # -*- coding: utf-8 -*-
 
+from tinydb import TinyDB
 from pylev import damerau_levenshtein as lev
+
+from nwt.config import Config
+from nwt.utils.os_util import Dir
+
+
+def book_path() -> dict:
+    bible_lang = Config().bible_lang
+    db = TinyDB(Dir.bible_dir / bible_lang / '{}.json'.format(bible_lang))
+    return db.table('book_list')
+
+
+def get_book_list():
+    bible_lang = Config().bible_lang
+    db = TinyDB(Dir.bible_dir / bible_lang / '{}.json'.format(bible_lang))
+    bookList = db.table('book_list')
+    book_list = [_['book_name'] for _ in bookList]
+
+    return book_list
 
 
 class GetDistance(object):
     def __init__(self, enter):
         self.enter = enter
         self.distance = 0
+        book_list = get_book_list()
 
         dist_list = list()
         for book in book_list:
@@ -24,18 +44,3 @@ class GetDistance(object):
 
     def __str__(self):
         return self.closest
-
-
-class Dir(object):
-    import os
-    from pathlib import Path
-
-    prefix = Path(os.environ['PREFIX'])
-    home = Path(os.path.expanduser('~'))
-
-    sys_dir = prefix / 'share' / 'nwt/'
-    home_dir = home / '.nwt/'
-    cache_dir = home / '.cache' / 'nwt/'
-    download_dir = cache_dir / 'download/'
-
-    bible_dir = home_dir / 'bible/'

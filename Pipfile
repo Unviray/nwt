@@ -9,6 +9,7 @@ click = ">=7.0"
 pylev = ">=1.3"
 prompt-toolkit = ">=2.0"
 tinydb = ">=3.11"
+toml = ">=0.10"
 
 [dev-packages]
 bumpversion = ">=0.5"

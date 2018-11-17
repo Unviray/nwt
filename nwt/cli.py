@@ -28,7 +28,7 @@ def main(ctx):
 
 def greet():
     """
-    Print greeting in terminal
+    Print greeting in terminal.
     """
 
     width = os.get_terminal_size()[0]
@@ -45,12 +45,18 @@ def greet():
 
 @main.command()
 def download():
+    """
+    Download a bible according to your language.
+    """
     pass
 
 
 @main.command()
 @click.argument('file_path')
 def install(file_path):
+    """
+    Install a bible.epub file.
+    """
     ins = Install(file_path)
     ins.run()
 

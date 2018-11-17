@@ -18,4 +18,4 @@ class OutputParser(object):
         for book in query:
             for chapter in query[book]:
                 for verset in query[book][chapter]:
-                    print(book, chapter, verser)
+                    print(book, chapter, verset)
