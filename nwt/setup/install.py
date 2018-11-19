@@ -51,7 +51,7 @@ class Install(object):
         print('Copy file...', end=' ')
         shutil.copy(
             self.epubfile,
-            self.inspath / '{}.epub'.format(self.metadata['stand']))
+            self.inspath / f'{self.metadata["stand"]}.epub')
         print('done')
 
         print('Get book list...', end=' ')

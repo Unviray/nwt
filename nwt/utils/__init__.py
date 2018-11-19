@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from tinydb import TinyDB
+from tinydb import TinyDB, Query
 from pylev import damerau_levenshtein as lev
 
 from nwt.config import Config
 from nwt.utils.os_util import Dir
 
 
-def book_path() -> dict:
+def book_path(book_arg) -> dict:
     bible_lang = Config().bible_lang
     db = TinyDB(Dir.bible_dir / bible_lang / '{}.json'.format(bible_lang))
-    return db.table('book_list')
+    book_list = db.table('book_list')
+    query = Query()
+
+    return book_list.search(query.book_name == book_arg)
 
 
 def get_book_list():
