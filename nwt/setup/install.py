@@ -33,7 +33,7 @@ class Install(object):
         self.inspath = Dir.bible_dir / self.metadata['stand'].replace('-', '_')
 
         self.metadb = TinyDB(self.inspath / '{}.json'.format(
-            self.metadata['stand']))
+            self.metadata['stand']), create_dirs=True)
 
     def get_book_list(self):
         bookDB = self.metadb.table('book_list')
@@ -48,12 +48,12 @@ class Install(object):
                 self.bookList[element.text] = element.attrs['href']
 
     def run(self):
-        print('Copy file...', end=' ')
+        print('Copy file...', end=' ', flush=True)
         shutil.copy(
             self.epubfile,
             self.inspath / f'{self.metadata["stand"]}.epub')
         print('done')
 
-        print('Get book list...', end=' ')
+        print('Get book list...', end=' ', flush=True)
         self.get_book_list()
         print('done')

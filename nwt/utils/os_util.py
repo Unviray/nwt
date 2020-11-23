@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 class Dir(object):
-    prefix = Path(os.environ['PREFIX'])
+    prefix = Path(os.environ.get('PREFIX', "/usr"))
     home = Path(os.path.expanduser('~'))
 
     sys_dir = prefix / 'share' / 'nwt/'
